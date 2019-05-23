@@ -29,6 +29,10 @@ ymove=3+y;
 function power() {
 config.SPLAT_RADIUS = 5;
 multipleSplats(parseInt(Math.random() * 20) + 5);
+xchar.classList = 'power';
+  setTimeout(function() {
+xchar.classList = '';
+  }, 200);
 }
 
 //bgfx
@@ -55,8 +59,8 @@ function playerupdate() {
         if (xmove>canvas.width-35 ||xmove<-4 ) {return}
         xmove=xmove+4;
         xchar.style.left = xmove+'px';  
-        config.SPLAT_RADIUS = 0.01;
-        bgfx(xmove, ymove-5, 1, 200, {r:10,g:10,b:10});
+        config.SPLAT_RADIUS = 0.001;
+        bgfx(xmove, ymove-5, 0, 0, {r:10,g:10,b:10});
     }
     if (keyboard.isDown(keyboard.UP))   {
         if (ymove>canvas.height || ymove<5) {return}
