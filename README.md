@@ -13,6 +13,8 @@ Moved multipleSplats function
 # todo
 Three.js integration.
 
+Box2D integration.
+
 Optional canvas hero (not a dom element).
 
 Collider objects/walls.
