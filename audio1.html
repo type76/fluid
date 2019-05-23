@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <title>fluid audio</title>
+  <style>
+  * {
+    user-select: none;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #111;
+    color: #fff;
+    font-family: monospace;
+    overflow: hidden;
+    text-align: left;
+  }
+  div audio, #controls, #eq {
+    position: relative;
+    z-index: 9;
+    display: block;
+  }
+  div audio {
+    display: block;
+    margin-bottom:10px;
+    outline: none;
+  }
+
+  .eq {
+    display: block;
+    margin: 0;
+    padding:0;
+    height: 1px;
+    width:100%;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 99;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  div.controls:hover {
+    color:#fff;
+    font-weight:bold;
+  }
+  div.controls label {
+    display: inline-block;
+    /*text-align: center;*/
+    width: 50px;
+  }
+
+  div.controls label, div.controls input, output {
+    /*vertical-align: middle;*/
+    padding: 0;
+    margin: 0;
+    font-family: monospace;
+    font-size: 12px;
+    /*text-align: center;*/
+
+  }
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  #hero {
+    position: absolute;
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #ccc;
+    z-index: 2;
+    border-radius: 100%; 
+    cursor: pointer;   
+    transform: scale(1);
+    outline: none;
+    border:none;
+    /*margin-top: 20px;*/
+  }
+  #hero:hover,#hero.run {background: #fff;}
+  #hero.power {transform: scale(1.2); background: #333;}
+  #eqcntx.showeq {display: block !important;
+    width: 300px; padding: 10px;}
+    #eqcntx {display: none;}
+    #closeeq {background: transparent; border:none;
+      font-family: monospace; outline: none; cursor: pointer; color: #ccc; text-transform: uppercase; position: absolute; z-index: 999;
+      top: 20px;
+      right: 20px;}
+      #mp3url {display: inline-block; margin: 10px 0; width: 100px;
+        background: transparent; color: #fff; padding: 10px; border:none; outline: none; font-size: 1em; font-family: monospace; border-bottom: red 1px solid;}
+        #mp3url:hover {color: red;}
+    </style>
+  </head>
+  <body>
+    <div class="eq">
+      <button onclick="closeEq();" id="closeeq">eq</button>
+
+      <div  id="eqcntx" style="display: none;">
+
+        <audio id="player" controls crossorigin="anonymous" loop>
+          <source src="wet.mp3" id="audioSource">
+            Your browser does not support the audio tag.
+          </audio>
+          <form onsubmit="changemp3();return false" id="inform">
+            <input type="text" size="70" name="mp3url" id="mp3url" value="wet.mp3" >
+          </form>
+
+          <label>60Hz</label>
+          <input type="range" value="0" step="1" min="-30" max="30" oninput="changeGain(this.value, 0);"></input>
+          <output id="gain0">0 dB</output>
+
+          <label>170Hz</label>
+          <input type="range" value="0" step="1" min="-30" max="30" oninput="changeGain(this.value, 1);"></input>
+          <output id="gain1">0 dB</output>
+
+          <label>350Hz</label>
+          <input type="range" value="0" step="1" min="-30" max="30" oninput="changeGain(this.value, 2);"></input>
+          <output id="gain2">0 dB</output>
+
+          <label>1000Hz</label>
+          <input type="range" value="0" step="1" min="-30" max="30" oninput="changeGain(this.value, 3);"></input>
+          <output id="gain3">0 dB</output>
+
+          <label>3500Hz</label>
+          <input type="range" value="0" step="1" min="-30" max="30" oninput="changeGain(this.value, 4);"></input>
+          <output id="gain4">0 dB</output>
+
+          <label>10000Hz</label>
+          <input type="range" value="0" step="1" min="-30" max="30" oninput="changeGain(this.value, 5);"></input>
+          <output id="gain5">0 dB</output>
+
+          <label>Master volume</label>
+          <input type="range" value="10" step="0.1" min="0" max="10" oninput="changeMasterGain(this.value);"></input>
+          <output id="masterGainOutput">10</output>
+
+          <label>Balance</label>
+          <input type="range" value="0" step="0.1" min="-1" max="1" oninput="changeBalance(this.value);"></input>
+          <output id="balanceOutput">0</output>
+
+        </div><!-- eqcntx -->
+
+        <button id="hero" style="display: none;"  onclick="power();" ></button>
+      </div>
+      <canvas id="cnv"></canvas>
+
+      <script src="keyscript.js"></script>
+      <script>
+      var mediaElement = document.getElementById('player');
+      var source = document.getElementById('audioSource');
+
+      var audioCtx = window.AudioContext || window.webkitAudioContext;
+      var audioContext, canvasContext;
+
+      var filters = [];
+
+      var analyser;
+      var width, height;
+      var dataArray, bufferLength;
+      var masterGain, stereoPanner;
+
+
+
+      const textfield = document.getElementById('mp3url');
+
+// bot output
+function changemp3() {
+  try {
+const text  = textfield.value; 
+source.src=textfield.value;
+  mediaElement.load();
+  // audio.play();
+  } catch (e) {
+    alert("Something went wrong:\n" + e);
+  }
+};
+
+
+function closeEq(){
+  var closeit = document.getElementById('eqcntx');
+  closeit.classList.toggle('showeq');
+
+  if (closeit.classList == 'showeq') {
+    document.getElementById('eqcntx').display = 'block';
+  } else {
+    document.getElementById('eqcntx').display = 'block';
+
+  }
+
+}
+
+//
+
+function buildAudioGraph() {
+  var sourceNode =   audioContext.createMediaElementSource(mediaElement);
+
+// analyser node
+analyser = audioContext.createAnalyser();
+
+// analyser fft
+analyser.fftSize = 512;
+bufferLength = analyser.frequencyBinCount;
+dataArray = new Uint8Array(bufferLength);
+
+// filters
+[60, 170, 350, 1000, 3500, 10000].forEach(function(freq, i) {
+  var eq = audioContext.createBiquadFilter();
+  eq.frequency.value = freq;
+  eq.type = "peaking";
+  eq.gain.value = 0;
+  filters.push(eq);
+});
+
+// connect filters
+sourceNode.connect(filters[0]);
+for(var i = 0; i < filters.length - 1; i++) {
+  filters[i].connect(filters[i+1]);
+}
+
+// master volume
+masterGain = audioContext.createGain();
+masterGain.value = 1;
+
+
+// connect filter to speakers
+filters[filters.length - 1].connect(masterGain);
+
+// split the signal
+stereoPanner = audioContext.createStereoPanner();
+// connect master volume to panner
+masterGain.connect(stereoPanner);
+
+// connect it all to destination
+stereoPanner.connect(analyser);  
+analyser.connect(audioContext.destination);
+}
+
+
+function changeGain(sliderVal,nbFilter) {
+  var value = parseFloat(sliderVal);
+  filters[nbFilter].gain.value = value;
+
+// update output labels
+var output = document.querySelector("#gain"+nbFilter);
+output.value = value + " dB";
+}
+
+function changeMasterGain(sliderVal) {
+  var value = parseFloat(sliderVal);
+  masterGain.gain.value =  value/10;
+
+// update output labels
+var output = document.querySelector("#masterGainOutput");
+output.value = value;
+}
+
+function changeBalance(sliderVal) {
+// between -1 and +1
+var value = parseFloat(sliderVal);
+
+stereoPanner.pan.value = value;
+// update output labels
+var output = document.querySelector("#balanceOutput");
+output.value = value;
+}
+
+</script>
+</body>
+</html>
