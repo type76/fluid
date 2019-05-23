@@ -5,33 +5,34 @@ canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
 // make dom overlay
-let xchar  = document.getElementById('xchar');
+let hero  = document.getElementById('hero');
 let posx = canvas.height/2;
 let posy = canvas.width/2;
 let xmove = canvas.width/2;
 let ymove = canvas.height/2;
-xchar.style.top = posx+'px';
-xchar.style.left = posy+'px';
-xchar.style.display = 'block';
+hero.style.top = posx+'px';
+hero.style.left = posy+'px';
+hero.style.display = 'block';
 
 
 // overlay position
 function updateoverlay(x, y) {
-config.SPLAT_RADIUS = 5;
+config.SPLAT_RADIUS = 0.5;
 if (x>canvas.width-10 || y>canvas.height-30 || x<20) {return}
-xchar.style.top = 3+y+'px';
-xchar.style.left = x-20+'px';
+hero.style.top = 3+y+'px';
+hero.style.left = x-20+'px';
 xmove=x-20;
 ymove=3+y;
+hero.classList = 'run';
 }
 
 // power click
 function power() {
 config.SPLAT_RADIUS = 5;
 multipleSplats(parseInt(Math.random() * 20) + 5);
-xchar.classList = 'power';
+hero.classList = 'power';
   setTimeout(function() {
-xchar.classList = '';
+hero.classList = '';
   }, 200);
 }
 
@@ -51,30 +52,30 @@ function playerupdate() {
     if (keyboard.isDown(keyboard.LEFT))   {
         if (xmove>canvas.width || xmove<0 ) {return}
         xmove = xmove-4;
-        xchar.style.left = xmove+'px';  
+        hero.style.left = xmove+'px';  
         config.SPLAT_RADIUS = 0.01;
         bgfx(xmove, ymove, 200, 1, {r:10,g:10,b:10});
     }
     if (keyboard.isDown(keyboard.RIGHT))   {
         if (xmove>canvas.width-35 ||xmove<-4 ) {return}
         xmove=xmove+4;
-        xchar.style.left = xmove+'px';  
+        hero.style.left = xmove+'px';  
         config.SPLAT_RADIUS = 0.001;
-        bgfx(xmove, ymove-5, 0, 0, {r:10,g:10,b:10});
+        bgfx(xmove, ymove, -200, 1, {r:10,g:10,b:10});
     }
     if (keyboard.isDown(keyboard.UP))   {
         if (ymove>canvas.height || ymove<5) {return}
         ymove=ymove-4;
-        xchar.style.top = ymove+'px'; 
+        hero.style.top = ymove+'px'; 
         config.SPLAT_RADIUS = 0.01;
-        bgfx(xmove, ymove, 1, 100, {r:10,g:10,b:10});
+        bgfx(xmove, ymove, 1, 200, {r:10,g:10,b:10});
     }
     if (keyboard.isDown(keyboard.DOWN))   {
         if (ymove>canvas.height-35 || ymove<-10) {return}
         ymove=ymove+4;
-        xchar.style.top = ymove+'px'; 
+        hero.style.top = ymove+'px'; 
         config.SPLAT_RADIUS = 0.01;
-        bgfx(xmove, ymove, 100, 1, {r:10,g:10,b:10});
+        bgfx(xmove, ymove, 1, -200, {r:10,g:10,b:10});
     }
 
 }// move player
@@ -116,7 +117,7 @@ let config = {
     BACK_COLOR: { r: 0, g: 0, b: 0 },
     TRANSPARENT: false,
     BLOOM: true,
-    BLOOM_ITERATIONS: 8,
+    BLOOM_ITERATIONS: 2,
     BLOOM_RESOLUTION: 256,
     BLOOM_INTENSITY: 0.8,
     BLOOM_THRESHOLD: 0.9,
@@ -1224,7 +1225,6 @@ canvas.addEventListener('touchmove', e => {
 canvas.addEventListener('mousedown', () => {
     pointers[0].down = true;
     pointers[0].color = generateColor();
-    // character();
 });
 
 canvas.addEventListener('touchstart', e => {
@@ -1244,6 +1244,7 @@ canvas.addEventListener('touchstart', e => {
 
 window.addEventListener('mouseup', () => {
     pointers[0].down = false;
+    hero.classList = '';
 });
 
 window.addEventListener('touchend', e => {
@@ -1252,17 +1253,11 @@ window.addEventListener('touchend', e => {
         for (let j = 0; j < pointers.length; j++)
             if (touches[i].identifier == pointers[j].id)
                 pointers[j].down = false;
+                hero.classList = '';
 });
 
 window.addEventListener('keyup', function(event) { keyboard.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) { keyboard.onKeydown(event); }, false);
-
-// window.addEventListener('keydown', e => {
-//     if (e.code === 'KeyP')
-//         config.PAUSED = !config.PAUSED;
-//     if (e.key === ' ')
-//         splatStack.push(parseInt(Math.random() * 20) + 5);
-// });
 
 function generateColor () {
     let c = HSVtoRGB(Math.random(), 1.0, 1.0);
