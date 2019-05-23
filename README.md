@@ -3,7 +3,7 @@ I want to make [this](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/) b
 
 Added overlay dom element [hero], keyboard controls, smokey trails, moved multipleSplats function.
 
-# To Do
+# todo
 Three.js integration.
 
 Optional canvas hero (not a dom element).
