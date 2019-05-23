@@ -12,7 +12,7 @@
         <link rel="apple-touch-icon" href="logo.png">
         <link rel="icon" href="logo.png">
 
-        <title>min</title>
+        <title>fluid</title>
     
         <style>
             * {
@@ -38,25 +38,31 @@
                 height: 100%;
             }
 
-            #xchar {
+            #hero {
                 position: absolute;
                 display: block;
                 width: 30px;
                 height: 30px;
                 line-height: 30px;
                 text-align: center;
-                background: red;
+                background: #ccc;
                 z-index: 2;
-                border-radius: 100%;    
+                border-radius: 100%; 
+                cursor: pointer;   
+                transform: scale(1);
+                outline: none;
+                border:none;
+                /*margin-top: 20px;*/
             }
-
+            #hero:hover,#hero.run {background: #fff;}
+            #hero.power {transform: scale(1.2); background: #333;}
             canvas#cnv {
                 z-index: 1;
             }
         </style>
     </head>
     <body>
-        <div id="xchar" style="display: none;"  onclick="power();" ></div>
+        <button id="hero" style="display: none;"  onclick="power();" ></button>
         <canvas id="cnv"></canvas>
 
         <script src="keyscript.js"></script>
