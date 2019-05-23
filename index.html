@@ -52,9 +52,11 @@
                 transform: scale(1);
                 outline: none;
                 border:none;
-                /*margin-top: 20px;*/
+                box-shadow: 0 0 10px #000;
+                opacity: 0.5;
+                transition: all 0.1s ease-in-out;
             }
-            #hero:hover,#hero.run {background: #fff;}
+            #hero:hover,#hero.run {background: #fff; opacity: 1;}
             #hero.power {transform: scale(1.2); background: #333;}
             canvas#cnv {
                 z-index: 1;
