@@ -1,7 +1,7 @@
 # fluid
 I want to make [this](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/) beautiful thing more useful and keep maximum visual feedback.
 
-Added overlay dom element [hero], keyboard controls, moved multipleSplats function, smokey trails.
+Added overlay dom element [hero], keyboard controls, smokey trails, moved multipleSplats function.
 
 #To Do
 Three.js integration
