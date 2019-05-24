@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" style="background-color: #222;"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>v2</title>
+
+<style>
+* {
+    user-select: none;
+}
+
+html, body {
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #111;
+}
+
+canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#hero {
+    position: absolute;
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #ccc;
+    z-index: 2;
+    border-radius: 100%; 
+    cursor: pointer;   
+    transform: scale(1);
+    outline: none;
+    border:none;
+    box-shadow: 0 0 10px #000;
+    opacity: 0.5;
+    display: none;
+    /*transition: all 0.1s ease-in-out;*/
+}
+#hero:hover,#hero.run {background: #fff; opacity: 1;}
+#hero.power {transform: scale(1.2); background: #333;}
+canvas#cnv {
+    z-index: 1;
+}
+canvas#canvas {
+    z-index: 1;
+    display: block;
+    width: 900px;
+    height: 300px;
+    /*background: red;*/
+}
+#playme {position: absolute; z-index: 2;
+display: block; width: auto; height: auto;}
+</style>
+</head>
+<body style="overflow: hidden;">
+
+    <button onclick="playme();" id="playme">play</button>
+
+    <button id="hero" style="display: none;"  onclick="power();" ></button>
+
+    <canvas id="canvas" width="900" height="300" style="display: block;"></canvas>
+
+    <canvas id="cnv"></canvas>
+
+
+
+    <script type="text/javascript">
+var started = false;
+
+    function stopme() {
+        stopSound(buffer);
+        viz = false;
+    }
+
+    function playme() {
+        document.getElementById('playme').style.display = 'none';
+        viz = true;
+        context = new AudioContext();
+        javascriptNode;
+        var audioBuffer;
+        var sourceNode;
+        var analyser;
+        started = true;
+
+// create a gradient for the fill. Note the strange
+// offset, since the gradient is calculated based on
+// the canvas, not the specific element we draw
+gradient = ctx.createLinearGradient(0,0,0,300);
+gradient.addColorStop(1,'#000000');
+gradient.addColorStop(0.75,'#ff0000');
+gradient.addColorStop(0.25,'#ffff00');
+gradient.addColorStop(0,'#ffffff');
+
+
+// load the sound
+setupAudioNodes();
+loadSound("wet.mp3");
+render();
+}
+
+
+
+var viz = false;
+var context;
+var javascriptNode;
+var ctx = document.getElementById('canvas').getContext("2d");
+
+// create the audio context (chrome only for now)
+// create the audio context (chrome only for now)
+if (! window.AudioContext) {
+    if (! window.webkitAudioContext) {
+        alert('no audiocontext found');
+    }
+    window.AudioContext = window.webkitAudioContext;
+}
+
+
+
+function setupAudioNodes() {
+
+// setup a javascript node
+javascriptNode = context.createScriptProcessor(2048, 1, 1);
+// connect to destination, else it isn't called
+javascriptNode.connect(context.destination);
+
+
+// setup a analyzer
+analyser = context.createAnalyser();
+analyser.smoothingTimeConstant = 0.3;
+analyser.fftSize = 512;
+
+// create a buffer source node
+sourceNode = context.createBufferSource();
+sourceNode.connect(analyser);
+analyser.connect(javascriptNode);
+
+sourceNode.connect(context.destination);
+}
+
+// load the specified sound
+function loadSound(url) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+
+// When loaded decode the data
+request.onload = function() {
+
+// decode the data
+context.decodeAudioData(request.response, function(buffer) {
+// when the audio is decoded play the sound
+playSound(buffer);
+}, onError);
+}
+request.send();
+}
+
+
+function stopSound(buffer) {
+// sourceNode = '';
+sourceNode.stop(0);
+}
+
+function playSound(buffer) {
+    sourceNode.buffer = buffer;
+    sourceNode.start(0);
+}
+
+// log if an error occurs
+function onError(e) {
+    console.log(e);
+}
+
+// when the javascript node is called
+// we use information from the analyzer node
+// to draw the volume
+function onaudioprocess() {
+// get the average for the first channel
+var array =  new Uint8Array(analyser.frequencyBinCount);
+
+analyser.getByteFrequencyData(array);
+
+// clear the current state
+ctx.clearRect(0, 0, 1000, 325);
+
+// set the fill style
+ctx.fillStyle=gradient;
+drawSpectrum(array);
+
+}
+
+
+function drawSpectrum(array) {
+    for ( var i = 0; i < (array.length); i++ ){
+
+        var value = array[i];
+if (array[i]>254.5) {
+config.SPLAT_RADIUS = 4;
+multipleSplats(1);
+}
+
+// if (array[i]<20) {
+//     config.SPLAT_RADIUS = 1;}
+
+}
+
+
+};
+
+
+</script>
+
+<script src="keyscript.js"></script>
+</body></html>
