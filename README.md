@@ -5,6 +5,7 @@ I want to make [this](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/) b
 mouse, touch, keyboard (up, down, left, right, space)
 
 ## Goals
+With the addition of audio, this has [taken a new turn](https://github.com/type76/fluid/issues/1).
 1. Make the fluid work in a 3D scene for use in game dev. Eg. the wake of a boat
 2. A music visualiser, crazy disco dancing device for your finger.  
 
@@ -12,7 +13,7 @@ The gamedev project makes this a texture in three.js and used accordingly. Also 
 It could be a canvas set as display:none. That is delicious because I'm experimenting with making good use of it while not going over the top with the processing. I want to make a globe that can express. This might help with that.
 
 The visualiser project is a touch only 'one finger' disco.
-I like the idea that a disabled person can use the same thing to dance as that big time DJ. The HUD is juicy invisible buttons and sliders. I am not sure how that works yet.
+I like the idea that a disabled person can use the same thing to dance as that big time DJ. The HUD is juicy invisible buttons and sliders. I am not sure how that works yet. This is such a good idea that it deserves a new project, soon.
 
 ## done
 Added overlay dom element [hero]
