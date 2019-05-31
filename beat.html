@@ -1,0 +1,172 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+html {background: #333;}
+body {
+margin: 0;
+padding: 0 0;
+-o-transition: 2s; 
+-ms-transition: 2s; 
+-moz-transition: 2s; 
+-webkit-transition: 2s; 
+transition: 2s;
+font-family: monospace;
+}
+
+audio {
+display: block;
+width: 640px;
+margin: 0 auto;
+}
+
+#timer, .playbut {
+display: block; 
+height: 300px; width: 300px; 
+text-align: center;
+margin: auto;
+}
+
+#timer {
+height: auto; 
+width: auto;
+margin: 0;
+padding: 5px;
+display: inline;
+position: absolute;
+z-index: 999;
+}
+
+
+#foreground {
+display: block;
+position: absolute;
+top:40%;
+left:40%;
+font-size: 2em;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+text-align: center;
+-o-transition: .1s; 
+-ms-transition: .1s; 
+-moz-transition: .1s; 
+-webkit-transition: .1s; 
+transition: .1s;
+width: 10%;
+height: 10%;
+}
+
+.blop {
+background: rgba(255,255,255,0.0);
+}
+
+.blip {
+background: rgba(255,255,255,0.9);
+}
+
+.blop, .blip {
+color: #000;
+font-size: .6em;
+display: block;
+text-align: center;
+margin: 0 auto;
+width: 2em;
+height:2em;
+} 
+
+#myAudio {display: block;
+position: absolute;
+top: 12px; right:12px;}
+
+
+.sc0 {background: transparent;}
+.sc1 {background: red;}
+.sc2 {background: blue;}
+.sc3 {background: green;}
+.sc4 {background: yellow;}
+.sc5 {background: transparent;}
+</style>
+
+
+</head>
+<body id="bg" class="sc0">
+
+<div id="timer">time : <span id="time">0</span><br />
+<a onclick="restartme()" id="restartb">restart</a>
+</div>
+
+
+
+<audio id="myAudio" src="wet.mp3" controls='controls' ontimeupdate="timeupdate();">
+</audio>
+
+<div id="foreground" class="blop">beat</div>
+
+
+
+<script>
+    var audio = document.getElementsByTagName('audio')[0];
+    var time = document.getElementById('time');
+    var audSrc = '';
+
+
+    function timeupdate() {
+        time.innerHTML = Math.round(audio.currentTime);
+
+	if (audio.currentTime >  1 && audio.currentTime < 4) {
+document.body.className = 'sc1';
+}
+
+	if (audio.currentTime >  4 && audio.currentTime < 8) {
+document.body.className = 'sc2';
+}
+
+	if (audio.currentTime >  8 && audio.currentTime < 12) {
+document.body.className = 'sc3';
+}
+
+	if (audio.currentTime >  12 && audio.currentTime < 16) {
+document.body.className = 'sc4';
+}
+	if (audio.currentTime >  16 && audio.currentTime < 30) {
+document.body.className = 'sc5';
+}
+
+    document.getElementById('foreground').className = 'blop';
+
+//end timeupdate
+}
+
+//set beat
+
+
+(function looop(){
+    document.getElementById('foreground').className = 'blip';
+setTimeout(looop,1200);
+})();
+
+
+//play button
+
+function playme() { 
+document.getElementById("playb").className = 'b_off';
+document.getElementById("pauseb").className = 'b_on';
+    myAudio.play(); 
+} 
+
+function pauseme() { 
+document.getElementById("playb").className = 'b_on';
+document.getElementById("pauseb").className = 'b_off';
+    myAudio.pause(); 
+shortcut.remove("space");
+shortcut.add("space",function() { playme(); });
+} 
+function restartme() { 
+    myAudio.currentTime = 0;
+	document.body.className = 'sc0';
+} 
+</script>
+</body>
+</html>
