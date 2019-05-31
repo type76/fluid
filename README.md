@@ -1,5 +1,5 @@
 # fluid
-I want to make [this](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/) beautiful thing more useful and keep maximum visual feedback. The early tests are v2.html and v4.html. I'm not a programmer, so use liberally.
+I want to make [this](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/) beautiful thing more useful and keep maximum visual feedback. The early tests are [v2.html](https://type76.com/fluid/v2.html) and [v4.html](https://type76.com/fluid/v4.html). I'm not a programmer.
 
 ## Controls
 mouse, touch, keyboard (up, down, left, right, space)
